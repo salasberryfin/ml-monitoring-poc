@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  app-api:
+    container_name: api-${APP_NAME}
+    image: api-${APP_NAME}
+    build: ${CUR_DIR}/model
+    ports:
+      - 8000:80
+
+  prometheus:
+    image: prom/prometheus:${PROMETHEUS_VERSION}
+    container_name: prometheus-${APP_NAME}
+    ports:
+      - 9090:9090
+    volumes:
+      - ${PROMETHEUS_DIR}:/etc/prometheus
+
+  node-exporter:
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION}
+    container_name: node-exporter-${APP_NAME}
+    restart: unless-stopped
+    expose:
+      - 9100
+
+  grafana:
+    image: grafana/grafana:${GRAFANA_VERSION}
+    container_name: grafana-${APP_NAME}
+    ports:
+      - 3000:3000
+    # volumes:
+    #   - ${GRAFANA_DIR}:/path/to/container/dir
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    depends_on:
+      - prometheus

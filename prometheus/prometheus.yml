@@ -1,0 +1,7 @@
+scrape_configs:
+  - job_name: prometheus-test-scrape
+    scrape_interval: 5s
+    static_configs:
+    - targets:
+      - prometheus:9090
+      - node-exporter:9100
